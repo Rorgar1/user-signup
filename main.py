@@ -1,30 +1,61 @@
-from flask import Flask, request
+from flask import Flask, request, redirect, render_template
+import cgi
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-form = """
-<!doctype html>
-<html>
-    <body> 
-        <form action="/username" method = "POST">
-            <label for="user_name">Username: </label>
-            <input id="user_name" type="text" name="user_name" />
-            <input type="submit" />
-        </form>
-    </body>
-</html>
-"""
 
 
 
-@app.route("/")
+@app.route("/",  methods=["GET", "POST"])
 def index():
-    return form
+    if request.method == "GET":
+        return render_template("index.html")
 
-@app.route ("/username", methods=["POST"])
-def username():
-    user_name = request.form["user_name"]
-    return "<h1> Welcome, " + user_name + "</h1>"
+    if request.method == "POST":
+        user_name = str(request.form["user_name"])
+        user_password = str(request.form["user_password"])
+        v_password = str(request.form["v_password"])
+        user_email = str(request.form["user_email"])
+
+        if user_name == '' or len(user_name) < 3 or len(user_name) > 20 or ' ' in user_name:
+            user_name_error = "Invalid username. Length must be 3-20 characters."
+        else:
+            user_name_error = ""
+
+        if user_password == '' or len(user_password) < 3 or len(user_password) > 20 or ' ' in user_password:
+            password_error = "Invalid password. Length must be 3-20 characters."
+        else:
+            password_error = ""
+
+        if v_password != user_password:
+            v_password_error = "Passwords do not match."
+        else:
+            v_password_error = ""
+
+        if user_email == '' or len(user_email) < 3 or len(user_email) > 20 or ' ' in user_email or '@' not in user_email:
+            email_error = "Invalid email."
+        else:
+            email_error = ""
+
+
+        if len(user_name_error) > 0 or len(password_error) > 0 or len(v_password_error) > 0 or len(email_error) > 0:
+            return render_template("index.html", user_name_error=user_name_error,
+                                    password_error=password_error,
+                                    v_password_error=v_password_error,
+                                    email_error=email_error,
+                                    user_name=user_name,
+                                    user_email=user_email)
+ 
+        else:  
+            return render_template("welcome.html",user_name=user_name) #redirect("/welcome")
+
+@app.route("/welcome", methods=['GET'])
+def welcome_page():
+    return render_template("welcome.html")
+       
+
+
+
 
 app.run()
