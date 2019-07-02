@@ -18,27 +18,57 @@ def index():
         v_password = str(request.form["v_password"])
         user_email = str(request.form["user_email"])
 
-        if user_name == '' or len(user_name) < 3 or len(user_name) > 20 or ' ' in user_name:
-            user_name_error = "Invalid username. Length must be 3-20 characters."
-        else:
-            user_name_error = ""
+#username
+      
+        if len(user_name) != 0:
+            if user_name == len(user_name) < 3 or len(user_name) > 20 or ' ' in user_name:
+                user_name_error = "Invalid username. Length must be 3-20 characters."
+            else: 
+                user_name_error = ""
+        else: 
+            user_name_error = "Field cannot be blank"
 
-        if user_password == '' or len(user_password) < 3 or len(user_password) > 20 or ' ' in user_password:
-            password_error = "Invalid password. Length must be 3-20 characters."
-        else:
-            password_error = ""
 
-        if v_password != user_password:
-            v_password_error = "Passwords do not match."
-        else:
-            v_password_error = ""
 
-        if user_email == '' or len(user_email) < 3 or len(user_email) > 20 or ' ' in user_email or '@' not in user_email:
-            email_error = "Invalid email."
+#password
+        if len(user_password) != 0:
+            if user_password == len(user_password) < 3 or len(user_password) > 20 or ' ' in user_password:
+                password_error = "Invalid password. Length must be 3-20 characters."
+            else:
+                password_error = ""
+        else: 
+            password_error = "Field cannot be blank"
+
+#verify password        
+        if len(v_password) != 0:
+            if v_password != user_password:
+                v_password_error = "Invalid"
+            else:
+                v_password_error = ""
+        else:
+            v_password_error = "Field cannot by blank"
+
+
+ 
+
+        
+#user email
+        if len(user_email) != 0:
+     #       email_error = ""
+
+           if user_email == len(user_email) < 3 or len(user_email) > 20 or '@' not in user_email or '.' not in user_email:
+               email_error = "Invalid email."
+           else:
+            email_error = ""
         else:
             email_error = ""
+        
+
+        
 
 
+
+#if there are no errors, render template
         if len(user_name_error) > 0 or len(password_error) > 0 or len(v_password_error) > 0 or len(email_error) > 0:
             return render_template("index.html", user_name_error=user_name_error,
                                     password_error=password_error,
